@@ -1,3 +1,7 @@
 node_modules
+# ignore "dot envt"
 .env
+# ignore sqlite archive
 database.sqlite
+# ignore coverage
+__tests__/coverage

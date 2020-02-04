@@ -16,15 +16,16 @@ describe('User', () => {
         })
         const token = await user.genToken()
         const response = await request.get('/user')
-            .set('authorization', `Bearer ${token}`)
-
+            .set('Authorization', `Bearer ${token}`)
+            
         expect(response.statusCode).toBe(200)
+        expect(response.body.email).toEqual(user.dataValues.email)
     })
+
     test('Verificando rejeição de token incorreto', async () => {
         const wrongToken = jwt.sign({ id: 20 }, 'wrongToken')
         const response = await request.get('/user')
-            .set('authorization', `Bearer ${wrongToken}`)
-
+            .set('Authorization', `Bearer ${wrongToken}`)
         expect(response.status).toBe(401)
     })
 

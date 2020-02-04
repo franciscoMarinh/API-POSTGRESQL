@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon ./src/server",
     "test": "set NODE_ENV=test&& jest",
     "start": "node ./src/server",
     "pretest": "set NODE_ENV=test&&npx sequelize db:migrate:undo:all&&npx sequelize db:migrate",

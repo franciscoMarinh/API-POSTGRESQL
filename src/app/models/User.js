@@ -23,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
     return bcrypt.compareSync(password, this.password)
   }
 
-  User.prototype.genToken = async function () {
-    return await jwt.sign({ id: this.id }, process.env.JWT_SECRET, { expiresIn: '1h' })
+  User.prototype.genToken = function () {
+    return jwt.sign({ id: this.id }, process.env.JWT_SECRET, { expiresIn: '1h' })
   }
 
   return User;

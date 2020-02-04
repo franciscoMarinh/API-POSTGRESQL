@@ -18,8 +18,7 @@ describe('User', () => {
         const response = await request.get('/user')
             .set('authorization', `Bearer ${token}`)
 
-        console.log(response.header)
-        expect(response.body.email).toEqual(user.dataValues.email)
+        expect(response.statusCode).toBe(200)
     })
     test('Verificando rejeição de token incorreto', async () => {
         const wrongToken = jwt.sign({ id: 20 }, 'wrongToken')

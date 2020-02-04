@@ -16,7 +16,7 @@ class AppController {
     }
 
     routes() {
-        this.app.use(require('./routes'))
+        this.app.use(require('./app/routes'))
     }
 }
 

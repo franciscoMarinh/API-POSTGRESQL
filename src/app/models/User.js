@@ -1,6 +1,8 @@
 'use strict';
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const ErrorHandle = require('../helpers/ErrorHandle')
+const { promisify } = require('util')
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
@@ -18,13 +20,23 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = function (models) {
     // associations can be defined here
   };
-
+  //Refaturar para funções asincronas  o metodo ispassword e o beforeSave
   User.prototype.isPassword = function (password) {
     return bcrypt.compareSync(password, this.password)
   }
 
-  User.prototype.genToken = function () {
-    return jwt.sign({ id: this.id }, process.env.JWT_SECRET, { expiresIn: '1h' })
+  User.prototype.genToken = async function () {
+    const promise = promisify(jwt.sign)
+    return await promise({ id: this.id }, process.env.JWT_SECRET, { expiresIn: '1h' })
+  }
+
+  User.findByCredentials = async (email, password) => {
+    const user = await User.findOne({ where: { email } })
+
+    if (!user) throw new ErrorHandle('Usuario não encontrado !!', 400)
+    if (!user.isPassword(password)) throw new ErrorHandle('Senha incorreta !!', 400)
+
+    return user
   }
 
   return User;

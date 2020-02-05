@@ -4,4 +4,4 @@ node_modules
 # ignore sqlite archive
 database.sqlite
 # ignore coverage
-__tests__/coverage/**
+__tests__/coverage

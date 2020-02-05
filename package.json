@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "nodemon ./src/server",
     "test": "set NODE_ENV=test&& jest",
-    "prestart": "npx sequelize db:migrate:undo:all&npx sequelize db:migrate",
     "start": "node ./src/server",
     "pretest": "set NODE_ENV=test&&npx sequelize db:migrate:undo:all&&npx sequelize db:migrate",
     "posttest": "set NODE_ENV=test&&npx sequelize db:migrate:undo:all"

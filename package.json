@@ -20,8 +20,12 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+<<<<<<< HEAD
     "express-rate-limit": "^5.0.0",
     "helmet": "^3.21.2",
+=======
+    "jsen": "^0.6.6",
+>>>>>>> e06839acf41cbb7709811658762e97116c5d266d
     "jsonschema": "^1.2.5",
     "jsonwebtoken": "^8.5.1",
     "pg": "^7.18.1",

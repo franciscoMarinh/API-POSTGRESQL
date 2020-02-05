@@ -19,7 +19,6 @@ describe('User', () => {
             .set('authorization', `Bearer ${token}`)
 
         expect(response.statusCode).toBe(200)
-        expect(response.body.email).toEqual(user.dataValues.email)
     })
 
     test('Verificando rejeição de token incorreto', async () => {

@@ -2,6 +2,7 @@ const truncate = require('../utils/truncate')
 const factory = require('../factories')
 const jwt = require('jsonwebtoken')
 const { promisify } = require('util')
+const { User } = require('../../src/app/models')
 
 describe('User', () => {
 
@@ -30,6 +31,17 @@ describe('User', () => {
         const promise = promisify(jwt.verify)
         const decoded = await promise(token, process.env.JWT_SECRET);
         expect(decoded.id).toEqual(user.id)
+
+    })
+
+    test('Obtendo um usuario a partir do class method findByCredentials', async () => {
+        let user;
+        user = await factory.create('User', {
+            password: "123456789"
+        })
+        const { email } = user.dataValues
+        user = await User.findByCredentials(email, "123456789")
+        expect(user).toBeDefined()
 
     })
 

@@ -33,8 +33,8 @@ module.exports = (sequelize, DataTypes) => {
   User.findByCredentials = async (email, password) => {
     const user = await User.findOne({ where: { email } })
 
-    if (!user) throw new ErrorHandle('Usuario não encontrado !!', 400)
-    if (!user.isPassword(password)) throw new ErrorHandle('Senha incorreta !!', 400)
+    if (!user) throw new ErrorHandle('Usuario não encontrado !!', 403)
+    if (!user.isPassword(password)) throw new ErrorHandle('Senha incorreta !!', 403)
 
     return user
   }

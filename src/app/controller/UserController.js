@@ -45,7 +45,7 @@ class UserController {
 
     async delete(req, res, next) {
         try {
-            const validator = UserSchema(req.body, false)
+            const validator = UserSchema(req.body, [])
             if (!validator.valid) throw new ErrorHandle(validator.errors[0].message, 403)
             const { id } = req.user
             const user = await User.findByPk(id)
@@ -56,6 +56,22 @@ class UserController {
         }
     }
 
+    async authByCredentials(req, res, next) {
+        try {
+            const validator = UserSchema(req.body, ["email", "password"])
+            if (!validator.valid) throw new ErrorHandle(validator.errors[0].message, 403)
+
+            const { email, password } = req.body
+            const user = await User.findByCredentials(email, password)
+            const token = await user.genToken()
+            res.json({
+                user,
+                token
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = new UserController()

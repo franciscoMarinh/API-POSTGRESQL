@@ -98,4 +98,19 @@ describe('User routes', () => {
         expect(userDeleted).toBeNull()
     })
 
+    test('Gerando token do usuario a partir da rota', async () => {
+        let user = await factory.create('User', {
+            password: "123456789"
+        })
+        const { email } = user.dataValues
+
+        let response = await request(app).post('/auth')
+            .send({
+                email,
+                password: "123456789"
+            })
+
+        expect(response.body).toHaveProperty('token')
+    })
+
 })

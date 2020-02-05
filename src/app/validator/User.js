@@ -20,11 +20,8 @@ var userSchema = {
     "additionalProperties": false
 };
 
-required = ['name', 'email', 'password']
-
-function validate(data, requiredAll = true) {
-    if (requiredAll) return v.validate(data, { ...userSchema, required })
-    return v.validate(data, userSchema)
+function validate(data, required = ['name', 'email', 'password']) {
+    return v.validate(data, { ...userSchema, required })
 }
 
 module.exports = validate

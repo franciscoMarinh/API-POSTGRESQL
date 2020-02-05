@@ -1,11 +1,12 @@
 const app = require('../../src/app')
-const request = require('supertest')(app)
+const request = require('supertest')
 const truncate = require('../utils/truncate')
 const factory = require('../factories')
+const { User } = require('../../src/app/models')
 
 describe('User routes', () => {
     beforeEach(async () => {
-        await truncate()
+        return await truncate()
     })
 
     test('Cadastrando usuario valido', async () => {
@@ -13,7 +14,7 @@ describe('User routes', () => {
             password: "123456789"
         })
         const { email, name, password } = user.dataValues
-        const response = await request.post('/user').send({
+        const response = await request(app).post('/register').send({
             email,
             name,
             password
@@ -30,13 +31,13 @@ describe('User routes', () => {
             password: "123456789",
             email: "franc1sc15"
         })
-        response = await request.post('/user').send(user.dataValues)
+        response = await request(app).post('/register').send(user.dataValues)
         expect(response.statusCode).toEqual(403)
         //Senha invalida
         user = await factory.build('User', {
             password: "1234"
         })
-        response = await request.post('/user').send(user.dataValues)
+        response = await request(app).post('/register').send(user.dataValues)
         expect(response.statusCode).toEqual(403)
     })
 
@@ -47,28 +48,54 @@ describe('User routes', () => {
         user = await factory.create('User', {
             email: "franc1sc15@gmail.com"
         })
-        //Tenta criar novamente
+        //Tenta criar novamente com o mesmo E-mail
         user = {
             email: "franc1sc15@gmail.com",
             password: "123456789",
             name: "francisco"
         }
-        response = await request.post('/user').send(user)
+        response = await request(app).post('/register').send(user)
         expect(response.statusCode).toEqual(403)
     })
-    test('Atualizando dados do usuario', async () => {
-        const user = await factory.create('User', {
+
+    test('Atualização de dados do usuario', async () => {
+        let user = await factory.create('User', {
             password: "123456789"
         })
-        const token = await user.genToken()
-
-        const response = await request.put('/user')
+        let token = await user.genToken()
+        let response;
+        //Faz uma atualização valida do usuario criado
+        response = await request(app).put('/user')
             .set('Authorization', `Bearer ${token}`)
             .send({
-                name: "Francisco",
-                id: "heeeey"
+                name: "Francisco"
             })
-        expect(response.status).toEqual(403)
+
+        expect(response.body.name).toEqual("Francisco")
+        //Faz uma atualização invalida do usuario criado
+        response = await request(app).put('/user')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                id: 1
+            })
+
+        expect(response.statusCode).toBe(403)
+
+    })
+
+    test('Excluindo um usuario', async () => {
+        let user = await factory.create('User', {
+            password: "123456789"
+        })
+        let token = await user.genToken()
+        let response = await request(app).delete('/user')
+            .set('Authorization', `Bearer ${token}`)
+
+        expect(response.statusCode).toBe(200)
+
+        let userDeleted = await User.findByPk(user.dataValues.id)
+
+        expect(userDeleted).toBeNull()
     })
 
 })

@@ -16,7 +16,7 @@ class UserController {
     async post(req, res, next) {
         try {
             const validator = UserSchema(req.body)
-            if (!validator) throw new ErrorHandle(validator.errors, 403)
+            if (!validator.valid) throw new ErrorHandle(validator.errors[0].message, 403)
 
             const { email } = req.body
 
@@ -32,15 +32,30 @@ class UserController {
     async put(req, res, next) {
         try {
             const validator = UserSchema(req.body, false)
-            if (!validator) throw new ErrorHandle(validator.errors, 403)
+            if (!validator.valid) throw new ErrorHandle(validator.errors[0].message, 403)
             const { id } = req.user
             const user = await User.findByPk(id)
-            await user.save({ ...req.body })
+            user.set(req.body)
+            await user.save()
             return res.json(user)
         } catch (error) {
             return next(error)
         }
     }
+
+    async delete(req, res, next) {
+        try {
+            const validator = UserSchema(req.body, false)
+            if (!validator.valid) throw new ErrorHandle(validator.errors[0].message, 403)
+            const { id } = req.user
+            const user = await User.findByPk(id)
+            await user.destroy()
+            return res.sendStatus(200)
+        } catch (error) {
+            return next(error)
+        }
+    }
+
 }
 
 module.exports = new UserController()

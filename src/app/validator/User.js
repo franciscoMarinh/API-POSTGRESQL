@@ -1,36 +1,30 @@
-const jsen = require('jsen');
+var { Validator } = require('jsonschema');
+var v = new Validator()
 
-const schema = {
-    type: 'object',
-    additionalProperties: false,
-    properties: {
-        name: {
-            type: 'string',
-            minLength: 5,
-            invalidMessage: 'Invalid username',
-            requiredMessage: 'Username is required'
+var userSchema = {
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
         },
-        email: {
-            type: 'string',
-            format: 'email'
+        "email": {
+            "type": "string",
+            "format": "email"
         },
-        password: {
-            type: 'string',
-            minLength: 6,
-            maxLength: 18,
-            requiredMessage: 'Please insert one password',
-            invalidMessage: 'Invalid password'
-        },
+        "password": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 18
+        }
     },
+    "additionalProperties": false
 };
 
 required = ['name', 'email', 'password']
 
 function validate(data, requiredAll = true) {
-    let validator;
-    if (requiredAll) validator = jsen({ ...schema, required })
-    validator = jsen(schema)
-    return validator(data)
+    if (requiredAll) return v.validate(data, { ...userSchema, required })
+    return v.validate(data, userSchema)
 }
 
 module.exports = validate

@@ -36,7 +36,7 @@ class UserController {
             const { id } = req.user
             const user = await User.findByPk(id)
             user.set(req.body)
-            await user.save()
+            await user.save({ fields: ['name', 'email', 'password'] })
             return res.json(user)
         } catch (error) {
             return next(error)
@@ -60,14 +60,10 @@ class UserController {
         try {
             const validator = UserSchema(req.body, ["email", "password"])
             if (!validator.valid) throw new ErrorHandle(validator.errors[0].message, 403)
-
             const { email, password } = req.body
             const user = await User.findByCredentials(email, password)
             const token = await user.genToken()
-            res.json({
-                user,
-                token
-            })
+            res.json(token)
         } catch (error) {
             next(error)
         }

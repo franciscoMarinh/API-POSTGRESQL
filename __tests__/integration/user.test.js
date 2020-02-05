@@ -68,7 +68,8 @@ describe('User routes', () => {
         response = await request(app).put('/user')
             .set('Authorization', `Bearer ${token}`)
             .send({
-                name: "Francisco"
+                name: "Francisco",
+                password: "12345678920"
             })
 
         expect(response.body.name).toEqual("Francisco")

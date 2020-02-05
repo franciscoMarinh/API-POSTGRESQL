@@ -5,9 +5,9 @@ require('dotenv').config({
 module.exports = {
   url: process.env.DATABASE_URL,
   storage: "database.sqlite",
-  dialectOptions: {
-    ssl: true
-  },
+  // dialectOptions: {
+  //   ssl: true
+  // },
   logging: false,
   define: {
     freezeTableName: true,

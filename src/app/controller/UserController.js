@@ -63,7 +63,7 @@ class UserController {
             const { email, password } = req.body
             const user = await User.findByCredentials(email, password)
             const token = await user.genToken()
-            res.json(token)
+            res.json({token})
         } catch (error) {
             next(error)
         }
